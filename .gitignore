@@ -1,0 +1,10 @@
+models
+public/**
+public/**.jpg
+public/**.jpeg
+public/**.png
+public/**.gif
+public/**.svg
+public/**.pdf
+public/**.doc
+runs/*
