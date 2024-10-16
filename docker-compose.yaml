@@ -1,6 +1,6 @@
 services:
-  yolo_api:
-    container_name: yolo_api
+  image_processing_api:
+    container_name: image_processing_api
     build:
         context: .
         dockerfile: Dockerfile
