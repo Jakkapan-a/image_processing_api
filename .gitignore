@@ -1,4 +1,4 @@
-models
+*.pt
 public/**
 public/**.jpg
 public/**.jpeg
@@ -8,3 +8,5 @@ public/**.svg
 public/**.pdf
 public/**.doc
 runs/*
+cache_dir/*
+.idea/*

@@ -1,4 +1,3 @@
-#
 import uuid
 from flask import Flask, request, jsonify, send_from_directory
 import os
@@ -6,12 +5,16 @@ from datetime import datetime, timedelta
 from ultralytics import YOLO
 import json
 app = Flask(__name__, static_url_path='/public', static_folder='/public')
-
 app.config['UPLOAD_FOLDER'] = 'public/uploads'
 app.config['MODEL_FOLDER'] = 'models'
 app.config['DETECT_FOLDER'] = 'public/detect'
 app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif'}
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024 # 16MB
+
+
+DEBUG = os.getenv("DEBUG", "false").lower() == "true" # Set to true to enable debug logging
+PORT = os.getenv("PORT", 10010)  # Port to run the server on
+
 # Cache to store models and last accessed times
 model_cache = {}
 model_access_time = {}
@@ -138,4 +141,4 @@ def get_image(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 if __name__ == "__main__":
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=DEBUG, host='0.0.0.0', port=PORT)

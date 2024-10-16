@@ -1,0 +1,39 @@
+services:
+  yolo_api:
+    container_name: yolo_api
+    build:
+        context: .
+        dockerfile: Dockerfile
+    ports:
+      - "10010:10010"
+    environment:
+      - PORT=10010
+      # specify these parameters if you want to use basic auth for the model server
+      - BASIC_AUTH_USER=
+      - BASIC_AUTH_PASS=
+      # set the log level for the model server
+      - LOG_LEVEL=DEBUG
+      # any other parameters that you want to pass to the model server
+      - ANY=PARAMETER
+      # specify the number of workers and threads for the model server
+      - WORKERS=1
+      - THREADS=8
+      # specify the model directory (likely you don't need to change this)
+      - MODEL_DIR=/data/models
+      - PYTHONPATH=/app
+
+      # YOLO parameters
+
+      # Allow to use custom `model_path` in labeling configurations
+      - ALLOW_CUSTOM_MODEL_PATH=true
+      # Show matplotlib debug plot for YOLO predictions
+      - DEBUG_PLOT=false
+      # Default score threshold, which is used to filter out low-confidence predictions,
+      # you can change it in the labeling configuration using `model_score_threshold` parameter in the control tags
+      - MODEL_SCORE_THRESHOLD=0.3
+      # Model root directory, where the YOLO model files are stored
+      - MODEL_ROOT=/app/models
+    volumes:
+      - ./models:/app/models
+      - ./cache_dir:/app/cache_dir
+      - .:/app
