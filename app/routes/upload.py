@@ -93,18 +93,6 @@ def upload_chunk_model():
 
         if chunk_number == total_chunks - 1:
             path_models = os.path.join('models', file_type)
-            # if not os.path.exists(path_models):
-            #     os.makedirs(path_models)
-            #
-            # new_filename_model = f"{filename}_{uuid.uuid4()}{extension}"
-            # new_filename_model = new_filename_model.replace(" ", "_").replace("-", "_")
-            # with open(os.path.join(path_models, new_filename_model), 'wb') as final_file:
-            #     for i in range(total_chunks):
-            #         temp_chunk_path = os.path.join(path_temp, f"{filename}_{i}{extension}")
-            #         print("temp_chunk_path", temp_chunk_path)
-            #         with open(temp_chunk_path, 'rb') as chunk_file:
-            #             final_file.write(chunk_file.read())
-            #         os.remove(temp_chunk_path)
             new_filename_model = merge_chunks(filename, total_chunks, path_temp, path_models, extension)
             #
             from app import db
@@ -132,10 +120,9 @@ def update_chunk_model():
         from app import db
         from app.models.file_management import FileManagement
 
-        data = request.json
-        _id = data.get('id')
-        name = data.get('name')
-        description = data.get('description')
+        _id = int(request.form.get('id'))
+        name = request.form.get('name')
+        description = request.form.get('description')
 
         if not _id:
             return jsonify({"error": "ID is required"}), 400
@@ -157,27 +144,34 @@ def update_chunk_model():
             if file.filename == '' or not allowed_file(file.filename):
                 return jsonify({"error": "Invalid file"}), 400
 
-            chunk_number = request.form.get('chunk_number', 0)
-            total_chunks = request.form.get('total_chunks', 1)
+            chunk_number = int(request.form.get('chunk_number', 0))
+            total_chunks = int(request.form.get('total_chunks', 1))
+
             filename = request.form.get('filename', 'uploaded_file')
             extension = os.path.splitext(file.filename)[1]
 
-            path_temp = os.path.join('public', 'temp', file_query.file_type)
+            file_type = request.form.get('file_type', 'cls') # cls, detect
+            path_temp = os.path.join('public', 'temp')
+            path_temp = os.path.join('public', 'temp', file_type)
             if not os.path.exists(path_temp):
                 os.makedirs(path_temp)
 
             temp_filename = f"{filename}_{chunk_number}{extension}"
             file.save(os.path.join(path_temp, temp_filename))
 
+
             if chunk_number == total_chunks - 1:
-                new_filename = merge_chunks(filename, total_chunks, path_temp, file_query.filepath, extension)
+                path_models = os.path.join('models', file_type)
+                new_filename = merge_chunks(filename, total_chunks, path_temp, path_models, extension)
             else:
                 return jsonify({"message": "Chunk uploaded successfully",
                                 "filename": temp_filename, "type": "chunk"}), 201
 
         # Check has new filename or not and update the record and remove the old file
         if new_filename:
-            os.remove(os.path.join(file_query.filepath, file_query.filename))
+            if os.path.exists(os.path.join(file_query.filepath, file_query.filename)):
+                os.remove(os.path.join(file_query.filepath, file_query.filename))
+
             file_query.filename = new_filename
         else:
             new_filename = file_query.filename
