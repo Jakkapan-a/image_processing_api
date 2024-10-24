@@ -68,6 +68,35 @@ def get_uploads():
         print('error get_uploads', e)
         return jsonify({"error": str(e)}), 500
 
+@upload_bp.route('/delete/<int:item_id>', methods=['DELETE'])
+def delete_uploads(item_id):
+    try:
+        from app import db
+        from app.models.file_management import FileManagement
+
+        _id = item_id
+
+        if not _id:
+            print("ID is required")
+            return jsonify({"error": "ID is required"}), 400
+
+        file_query = FileManagement.query.get(_id)
+        if not file_query:
+            print("File not found")
+            return jsonify({"error": "File not found"}), 404
+
+        if os.path.exists(os.path.join(file_query.filepath, file_query.filename)):
+            os.remove(os.path.join(file_query.filepath, file_query.filename))
+
+        db.session.delete(file_query)
+        db.session.commit()
+
+        return jsonify({"message": "File deleted successfully"}), 200
+
+    except Exception as e:
+        print('error delete_uploads', e)
+        return jsonify({"error": str(e)}), 500
+
 
 @upload_bp.route('/upload-chunk-model', methods=['POST'])
 def upload_chunk_model():
@@ -124,14 +153,18 @@ def update_chunk_model():
         name = request.form.get('name')
         description = request.form.get('description')
 
+        print({
+            "_id": _id,
+            "name": name,
+            "description": description
+        })
+
         if not _id:
+            print("ID is required")
             return jsonify({"error": "ID is required"}), 400
 
         if not name:
             return jsonify({"error": "Name is required"}), 400
-
-        if not description:
-            return jsonify({"error": "Description is required"}), 400
 
         file_query = FileManagement.query.get(_id)
         if not file_query:
@@ -179,6 +212,7 @@ def update_chunk_model():
         file_query.filename = new_filename
         file_query.name = name
         file_query.description = description
+        file_query.updated_at = db.func.now()
         db.session.commit()
 
         return jsonify({"message": "File updated successfully", "data": file_query.to_dict()}), 200
