@@ -14,5 +14,8 @@ def clean_up_folder(folder, max_age_days=30):
     except Exception as e:
         print(f"Error cleaning up folder {folder}: {e}")
 
+ALLOWED_EXTENSIONS = { 'jpg', 'png', 'pt'} # set of allowed file extensions
+
+
 def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'png', 'jpg', 'jpeg', 'gif'}
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS

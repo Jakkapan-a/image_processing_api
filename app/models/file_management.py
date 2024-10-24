@@ -25,6 +25,7 @@ class FileManagement(get_db().Model):
             'filename': self.filename,
             'filepath': self.filepath,
             'file_type': self.file_type,
+            'description': self.description,
             'created_at': self.created_at,
             'updated_at': self.updated_at
         }
