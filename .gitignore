@@ -10,3 +10,14 @@ public/**.doc
 runs/*
 cache_dir/*
 .idea/*
+
+postgres-data/*
+.env
+*.sqlite3
+*.sqlite
+*.sqlite3-journal
+*.sqlite-journal
+*.log
+
+*.pyc
+__pycache__/

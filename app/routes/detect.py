@@ -6,7 +6,6 @@ from app.services.file_manager import clean_up_folder
 import json
 detect_bp = Blueprint('detect', __name__)
 
-
 # noinspection DuplicatedCode
 @detect_bp.route('/detect', methods=['POST'])
 def detect():

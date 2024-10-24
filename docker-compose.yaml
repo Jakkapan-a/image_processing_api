@@ -37,3 +37,26 @@ services:
       - ./models:/app/models
       - ./cache_dir:/app/cache_dir
       - .:/app
+    depends_on:
+      - postgres
+    networks:
+      - image_processing_network
+
+#  postgres:
+#    container_name: postgres_image_processing
+#    image: postgres
+#    environment:
+#      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+#      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+#      POSTGRES_DB: ${POSTGRES_DB:-postgres}
+#      PGDATA: /data/postgres
+#    volumes:
+#      - ./postgres-data:/data/postgres
+#    ports:
+#      - "6436:5432"
+#    networks:
+#      - image_processing_network
+#    restart: always
+#networks:
+#    image_processing_network:
+#        driver: bridge
