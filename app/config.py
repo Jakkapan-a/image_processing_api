@@ -10,6 +10,7 @@ class Config:
     PORT = int(os.getenv("PORT", 10010))
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', 'sqlite:///db.sqlite3')
     SQLALCHEMY_TRACK_MODIFICATIONS = True
+    LOG_FILE = 'logs/app.log'
 
 class DevelopmentConfig(Config):
     DEBUG = True

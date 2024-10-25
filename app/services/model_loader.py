@@ -26,7 +26,7 @@ def get_model(model_name, model_folder):
         return model_cache[model_name]
 
     # Load the model and store it in the cache
-    model_path = os.path.join(model_folder, 'detect', model_name + '.pt')
+    model_path = os.path.join(model_folder, model_name)
     if not os.path.exists(model_path):
         return None
 

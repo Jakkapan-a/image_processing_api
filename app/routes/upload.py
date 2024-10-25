@@ -1,6 +1,4 @@
-from importlib.metadata import files
-from re import search
-
+# Description: Upload file routes
 from flask import Blueprint, request, jsonify, send_from_directory
 import uuid
 import os
@@ -17,14 +15,28 @@ def upload():
     if file.filename == '' or not allowed_file(file.filename):
         return jsonify({"error": "Invalid file"}), 400
 
-    new_filename = uuid.uuid4().hex + os.path.splitext(file.filename)[1]
-    file.save(os.path.join('public/uploads', new_filename))
+    # box_id, name
+    box_id = request.form.get('box_id', 0)
+    name = request.form.get('name', 'u')
 
+    print("form", request.form)
+
+    # new_filename = name +"_"+ box_id + uuid.uuid4().hex + os.path.splitext(file.filename)[1]
+    new_filename = f'{name}_{box_id}_{uuid.uuid4()}{os.path.splitext(file.filename)[1]}'
+    file.save(os.path.join('public/uploads', new_filename))
     return jsonify({"message": "file uploaded", "filename": new_filename})
 
 @upload_bp.route('/uploads/<filename>', methods=['GET'])
 def get_upload(filename):
-    return send_from_directory('public/uploads', filename)
+    print("filename", filename)
+    path = os.path.join('public/uploads', filename)
+    if not os.path.exists(path):
+        print("File not found")
+        return jsonify({"error": "File not found"}), 404
+    else:
+        print("File found")
+
+    return send_from_directory('../public/uploads', filename)
 
 
 def create_directory(path):
@@ -96,7 +108,6 @@ def delete_uploads(item_id):
     except Exception as e:
         print('error delete_uploads', e)
         return jsonify({"error": str(e)}), 500
-
 
 @upload_bp.route('/upload-chunk-model', methods=['POST'])
 def upload_chunk_model():
