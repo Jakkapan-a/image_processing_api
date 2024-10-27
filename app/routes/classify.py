@@ -12,8 +12,8 @@ classify_bp = Blueprint('classify', __name__)
 def classify():
     # from app import db
     data = request.json
-    # _id = data.get('id')
-    _id = 16
+    # _id = 16
+    _id = data.get('id')
     filename = data.get('filename')
     current_app.logger.info(f'cls filename: {filename}, id: {_id}')
 

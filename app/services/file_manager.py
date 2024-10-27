@@ -1,5 +1,6 @@
 import os
 from datetime import datetime, timedelta
+from flask import current_app
 
 def clean_up_folder(folder, max_age_days=15):
     try:
@@ -8,8 +9,9 @@ def clean_up_folder(folder, max_age_days=15):
             file_path = os.path.join(folder, filename)
             if os.path.isfile(file_path):
                 file_time = datetime.fromtimestamp(os.path.getmtime(file_path))
-                if now - file_time > timedelta(days=max_age_days):
+                if now - file_time >= timedelta(days=max_age_days):
                     os.remove(file_path)
+                    current_app.logger.info(f"Removed old file: {file_path}")
                     print(f"Removed old file: {file_path}")
     except Exception as e:
         print(f"Error cleaning up folder {folder}: {e}")
