@@ -1,12 +1,14 @@
 import os
 
-from flask import Flask
+from apscheduler.schedulers.background import BackgroundScheduler
+from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
 from .config import Config
 from dotenv import load_dotenv
 import logging
 from logging.handlers import TimedRotatingFileHandler
-from flask_cors import CORS, cross_origin
+from flask_cors import CORS
+
 
 db = SQLAlchemy()
 
@@ -74,5 +76,13 @@ def create_app():
             clean_up_width_db('models/cls')
             # clean_up_width_db('models/cls')
             print("Cls folder cleaned up successfully!")
+
+    from app.services.model_loader import clean_model_cache
+    # schedule clean up
+    scheduler = BackgroundScheduler()
+    if not any(job.name == "clean_model_cache_job" for job in scheduler.get_jobs()):
+        scheduler.add_job(clean_model_cache, 'interval', minutes=15, id="clean_model_cache_job")
+
+    scheduler.start()
 
     return app
