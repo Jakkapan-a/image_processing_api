@@ -29,11 +29,11 @@ def detect():
     results = model.predict(image_path)
     detection_speed = results[0].speed
 
-    unique_filename = f'detected_{uuid.uuid4().hex}_{file_name}'
-    output_image_path = os.path.join(current_app.config['DETECT_FOLDER'], unique_filename).replace('\\', '/')
-    for result in results:
-        print("save path:" + output_image_path)
-        result.save(filename=output_image_path)
+    # unique_filename = f'detected_{uuid.uuid4().hex}_{file_name}'
+    # output_image_path = os.path.join(current_app.config['DETECT_FOLDER'], unique_filename).replace('\\', '/')
+    # for result in results:
+    #     print("save path:" + output_image_path)
+    #     result.save(filename=output_image_path)
 
     # Get Rectangles and Classes to json for response
     respJson = []

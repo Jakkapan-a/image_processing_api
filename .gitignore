@@ -21,3 +21,4 @@ postgres-data/*
 logs/
 *.pyc
 __pycache__/
+.idea

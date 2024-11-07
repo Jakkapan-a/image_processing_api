@@ -6,6 +6,7 @@ from .config import Config
 from dotenv import load_dotenv
 import logging
 from logging.handlers import TimedRotatingFileHandler
+from flask_cors import CORS, cross_origin
 
 db = SQLAlchemy()
 
@@ -13,6 +14,8 @@ def create_app():
     # Load environment variables
     load_dotenv()
     app = Flask(__name__)
+    CORS(app, resources={r"/api/*": {"origins": "*"}})
+
     app.config.from_object(Config)
     # logs
     if not os.path.exists('logs'):
@@ -33,11 +36,12 @@ def create_app():
     db.init_app(app)
 
     # Register blueprints
-    from .routes import upload_bp, detect_bp, classify_bp, index_app
+    from .routes import upload_bp, detect_bp, classify_bp, index_app, ocr_bp
     app.register_blueprint(index_app)
     app.register_blueprint(upload_bp, url_prefix='/api/file')
     app.register_blueprint(detect_bp, url_prefix='/api/detect')
     app.register_blueprint(classify_bp, url_prefix='/api/classify')
+    app.register_blueprint(ocr_bp, url_prefix='/api/ocr')
 
     @app.cli.command('init-db')
     def init_db():

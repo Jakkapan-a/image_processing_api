@@ -11,8 +11,8 @@ requests==2.32.3
 colorama==0.4.6
 PyYAML==6.0.2
 typing_extensions==4.12.2
-MarkupSafe==2.1.5
-Werkzeug==3.0.4
+MarkupSafe==3.0.2
+Werkzeug==3.1.2
 click==8.1.7
 blinker==1.8.2
 itsdangerous==2.2.0
@@ -47,3 +47,4 @@ fonttools==4.54.1
 pyparsing==3.1.4
 kiwisolver==1.4.7
 Flask==3.0.3
+Flask-Cors==5.0.0
