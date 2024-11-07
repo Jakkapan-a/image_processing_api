@@ -34,8 +34,6 @@ services:
       - ./models:/app/models
       - ./cache_dir:/app/cache_dir
       - .:/app
-    depends_on:
-      - postgres
     networks:
       - image_processing_network
 
