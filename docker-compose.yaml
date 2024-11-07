@@ -8,9 +8,6 @@ services:
       - "10010:10010"
     environment:
       - PORT=10010
-      # specify these parameters if you want to use basic auth for the model server
-      - BASIC_AUTH_USER=
-      - BASIC_AUTH_PASS=
       # set the log level for the model server
       - LOG_LEVEL=DEBUG
       # any other parameters that you want to pass to the model server
@@ -42,21 +39,6 @@ services:
     networks:
       - image_processing_network
 
-#  postgres:
-#    container_name: postgres_image_processing
-#    image: postgres
-#    environment:
-#      POSTGRES_USER: ${POSTGRES_USER:-postgres}
-#      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
-#      POSTGRES_DB: ${POSTGRES_DB:-postgres}
-#      PGDATA: /data/postgres
-#    volumes:
-#      - ./postgres-data:/data/postgres
-#    ports:
-#      - "6436:5432"
-#    networks:
-#      - image_processing_network
-#    restart: always
-#networks:
-#    image_processing_network:
-#        driver: bridge
+networks:
+    image_processing_network:
+        driver: bridge
