@@ -11,7 +11,7 @@ from app.services.file_manager import allowed_file
 
 classify_bp = Blueprint('classify', __name__)
 # noinspection DuplicatedCode
-@classify_bp.route('/', methods=['POST'])
+@classify_bp.route('', methods=['POST'])
 def classify():
     # from app import db
     data = request.json
@@ -68,6 +68,7 @@ def classifyUp():
         data = request.form
         print('data', data)
         _id = data.get('id')
+        _id = 15
         print('id', _id)
         image = Image.open(io.BytesIO(image_file.read()))
         # Load the model

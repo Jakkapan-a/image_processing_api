@@ -4,7 +4,6 @@ from flask import Blueprint
 from .upload import upload_bp
 from .detect import detect_bp
 from .classify import classify_bp
-from .ocr import ocr_bp
 from .index import index_app
 
 # # Blueprint Configuration

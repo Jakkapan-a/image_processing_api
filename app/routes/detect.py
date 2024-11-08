@@ -57,8 +57,6 @@ def detect():
     return jsonify({"message": "detecting",
                     "results": respJson,
                     "boxes": boxes_json,
-                    "output_image": output_image_path,
-                    "filename": unique_filename,
                     "detection_speed": detection_speed})
 
 @detect_bp.route('/detect/<filename>', methods=['GET'])

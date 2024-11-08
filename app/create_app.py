@@ -34,14 +34,13 @@ def create_app():
 
     # Initialize database
     db.init_app(app)
-    app.logger.info('Database initialized successfully!')
 
     # Register blueprints
     from .routes import upload_bp, detect_bp, classify_bp, index_app
+    app.register_blueprint(index_app)
+    app.register_blueprint(upload_bp, url_prefix='/api/file')
     app.register_blueprint(detect_bp, url_prefix='/api/detect')
     app.register_blueprint(classify_bp, url_prefix='/api/classify')
-    app.register_blueprint(upload_bp, url_prefix='/api/file')
-    app.register_blueprint(index_app, url_prefix='')
 
     @app.cli.command('init-db')
     def init_db():
