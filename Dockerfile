@@ -24,7 +24,7 @@ ENV PYTHONUNBUFFERED=1 \
     WORKERS=1 \
     THREADS=2 \
     CUDA_HOME=/usr/local/cuda \
-    DEBUG=true
+    DEBUG=false
 
 # Install Python, pip, and required build dependencies
 RUN apt-get update && \
@@ -62,4 +62,5 @@ RUN chmod +x /app/start.sh
 
 EXPOSE 10010
 
-CMD ["/app/start.sh"]
+#CMD ["/app/start.sh"]
+CMD ["python", "_server.py"]
