@@ -68,8 +68,11 @@ def classifyUp():
         data = request.form
         print('data', data)
         _id = data.get('id')
-        _id = 15
+        # _id = 15
         print('id', _id)
+        if _id is None:
+            return jsonify({"error": "No id part"}), 400
+
         image = Image.open(io.BytesIO(image_file.read()))
         # Load the model
         from app.models.file_management import FileManagement
