@@ -1,6 +1,6 @@
 services:
-  service_yolo_api:
-    container_name: service_yolo_api
+  service_image_api:
+    container_name: service_image_api
     build:
         context: .
         dockerfile: Dockerfile
@@ -23,8 +23,8 @@ services:
       - ./cache_dir:/app/cache_dir
       - .:/app
     networks:
-      - service_yolo_network
+      - service_image_api_network
     restart: always
 networks:
-  service_yolo_network:
+  service_image_api_network:
         driver: bridge
