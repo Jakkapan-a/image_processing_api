@@ -23,6 +23,10 @@ def upload():
 
     # new_filename = name +"_"+ box_id + uuid.uuid4().hex + os.path.splitext(file.filename)[1]
     new_filename = f'{name}_{box_id}_{uuid.uuid4()}{os.path.splitext(file.filename)[1]}'
+
+    # Check and create the directory
+    create_directory('public/uploads')
+
     file.save(os.path.join('public/uploads', new_filename))
     return jsonify({"message": "file uploaded", "filename": new_filename})
 

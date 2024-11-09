@@ -62,5 +62,5 @@ RUN chmod +x /app/start.sh
 
 EXPOSE 10010
 
-#CMD ["/app/start.sh"]
-CMD ["python", "_server.py"]
+CMD ["/app/start.sh"]
+# CMD ["python", "_server.py"]
