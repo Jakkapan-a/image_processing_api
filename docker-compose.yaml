@@ -16,7 +16,7 @@ services:
       # specify the number of workers and threads for the model server
       - WORKERS=2
       - THREADS=4
-      - DEBUG=true
+      - DEBUG=false
 
     volumes:
       - ./models:/app/models

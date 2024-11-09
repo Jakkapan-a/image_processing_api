@@ -1,4 +1,6 @@
-FROM pytorch/pytorch:2.1.2-cuda12.1-cudnn8-runtime
+# Use Debian stable-slim as the base image
+#FROM pytorch/pytorch:2.1.2-cuda12.1-cudnn8-runtime
+FROM pytorch/pytorch:2.5.1-cuda12.4-cudnn9-runtime
 ARG DEBIAN_FRONTEND=noninteractive
 ARG TEST_ENV
 
@@ -19,15 +21,32 @@ ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     PIP_CACHE_DIR=/.cache \
     PORT=10010 \
-    WORKERS=2 \
-    THREADS=4 \
-    CUDA_HOME=/usr/local/cuda
+    WORKERS=1 \
+    THREADS=2 \
+    CUDA_HOME=/usr/local/cuda \
+    DEBUG=true
 
-#RUN conda install -c "nvidia/label/cuda-12.1.1" cuda -y
-RUN conda install -c "nvidia/label/cuda-12.1" cuda -y
+# Install Python, pip, and required build dependencies
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    python3 python3-pip python3-venv python3-distutils build-essential \
+    libgl1 libglib2.0-0 libsm6 libxext6 libxrender1 && \
+    rm -rf /var/lib/apt/lists/*
+
+
+RUN conda install -c "nvidia/label/cuda-12.4" cuda -y
 ENV CUDA_HOME=/opt/conda \
     TORCH_CUDA_ARCH_LIST="6.0;6.1;7.0;7.5;8.0;8.6+PTX;8.9;9.0"
 
+# Install timezone data
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends tzdata && \
+    rm -rf /var/lib/apt/lists/*
+
+# Set the timezone to Thailand (Asia/Bangkok)
+ENV TZ=Asia/Bangkok
+
+# install model requirements
 COPY requirements.txt .
 RUN --mount=type=cache,target=${PIP_CACHE_DIR},sharing=locked \
     pip3 install -r requirements.txt
@@ -36,19 +55,12 @@ WORKDIR /app
 
 COPY . ./
 
-COPY tests /app/tests
-
-# Download the YOLO models
-RUN /bin/sh -c 'if [ ! -f /app/models/detect/yolov8m.pt ]; then \
-    yolo predict model=/app/models/detect/yolov8m.pt source=/app/tests/car.jpg \
-    && yolo predict model=/app/models/detect/yolov8n.pt source=/app/tests/car.jpg \
-    && yolo predict model=/app/models/detect/yolov8n-cls.pt source=/app/tests/car.jpg \
-    && yolo predict model=/app/models/detect/yolov8n-seg.pt source=/app/tests/car.jpg; \
-    fi'
-
 ENV PYTHONPATH=/app
 
-# Change permissions
+# Change permissions for start.sh
 RUN chmod +x /app/start.sh
 
-CMD ["/app/start.sh"]
+EXPOSE 10010
+
+# CMD ["/app/start.sh"]
+CMD ["python", "_server.py"]
