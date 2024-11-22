@@ -42,37 +42,7 @@ def create_app():
     app.register_blueprint(detect_bp, url_prefix='/api/detect')
     app.register_blueprint(classify_bp, url_prefix='/api/classify')
 
-    @app.cli.command('init-db')
-    def init_db():
-        """Initialize the database."""
-        with app.app_context():
-            db.create_all()
-            print("Database tables created successfully!")
 
-    @app.cli.command('drop-db')
-    def drop_db():
-        """Drop the database."""
-        with app.app_context():
-            db.drop_all()
-            print("Database tables dropped successfully!")
-
-    @app.cli.command('seed-db')
-    def seed_db():
-        """Seed the database."""
-        with app.app_context():
-            from app.models.file_management import FileManagement
-            db.session.add(FileManagement(name='test', filename='test.jpg', filepath='public/uploads/test.jpg', type_file='cls'))
-            db.session.commit()
-            print("Database seeded successfully!")
-
-    @app.cli.command('clean-db')
-    def clean_up():
-        """Clean up the clean-db folder."""
-        with app.app_context():
-            from app.services.file_manager import clean_up_width_db
-            clean_up_width_db('models/cls')
-            # clean_up_width_db('models/cls')
-            print("Cls folder cleaned up successfully!")
 
     from app.services.model_loader import clean_model_cache
     # schedule clean up

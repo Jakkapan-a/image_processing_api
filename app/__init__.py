@@ -2,6 +2,7 @@ import os
 
 from apscheduler.schedulers.background import BackgroundScheduler
 from flask import Flask, request
+from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from .config import Config
 from dotenv import load_dotenv
@@ -10,7 +11,10 @@ from logging.handlers import TimedRotatingFileHandler
 from flask_cors import CORS
 
 db = SQLAlchemy()
+migrate = Migrate()
+
 def create_app():
+    from app.models.file_management import FileManagement  #
     # Load environment variables
     load_dotenv()
     app = Flask(__name__)
@@ -26,29 +30,39 @@ def create_app():
     handler.setLevel(logging.INFO)
     formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
     handler.setFormatter(formatter)
+    logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
     app.logger.addHandler(handler)
 
     app.logger.info('Starting server...')
 
-    print('SQLALCHEMY_DATABASE_URI:', app.config['SQLALCHEMY_DATABASE_URI'])
-
     # Initialize database
     db.init_app(app)
-    app.logger.info('Database initialized successfully!')
+    migrate.init_app(app, db)
+    app.logger.info('Initialized app successfully!')
+
 
     # Register blueprints
-    from .routes import upload_bp, detect_bp, classify_bp, index_app
+    from .routes import upload_bp, detect_bp, classify_bp, index_app ,filemanager_bp
     app.register_blueprint(detect_bp, url_prefix='/api/detect')
     app.register_blueprint(classify_bp, url_prefix='/api/classify')
     app.register_blueprint(upload_bp, url_prefix='/api/file')
+    app.register_blueprint(filemanager_bp, url_prefix='/api/filemanager')
     app.register_blueprint(index_app, url_prefix='')
+
+    @app.cli.command('test')
+    def test():
+       print("Test command executed successfully!")
 
     @app.cli.command('init-db')
     def init_db():
+        # migrations
+
         """Initialize the database."""
         with app.app_context():
             db.create_all()
             print("Database tables created successfully!")
+        if not os.path.exists('migrations'):
+            os.mkdir('migrations')
 
     @app.cli.command('drop-db')
     def drop_db():

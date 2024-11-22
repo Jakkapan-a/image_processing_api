@@ -9,6 +9,6 @@ if __name__ == '__main__':
     for rule in app.url_map.iter_rules():
         methods = ', '.join(sorted(rule.methods))
         route_list.append([rule.rule, methods, rule.endpoint])
-
+    print('App version: v2.0.0')
     print(tabulate(route_list, headers=["Route", "Methods", "Endpoint"], tablefmt="grid"))
     app.run(debug=app.config['DEBUG'], host='0.0.0.0', port=app.config['PORT'])

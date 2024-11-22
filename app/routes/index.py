@@ -6,6 +6,9 @@ from app.services.file_manager import clean_up_folder,clean_up_temp_folder
 def index():
     clean_up_temp_folder()
     return jsonify({"message": "server is running"}), 200
+@index_app.route('/api', methods=['GET'])
+def api():
+    return jsonify({"message": "api is running"}), 200
 
 @index_app.route('/clean', methods=['GET'])
 def clean():

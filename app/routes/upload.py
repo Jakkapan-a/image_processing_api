@@ -42,7 +42,6 @@ def get_upload(filename):
 
     return send_from_directory('../public/uploads', filename)
 
-
 def create_directory(path):
     if not os.path.exists(path):
         os.makedirs(path)

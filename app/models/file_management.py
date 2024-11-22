@@ -1,19 +1,20 @@
-from flask_sqlalchemy import SQLAlchemy
+from app import db
 
-# Import db locally to avoid circular import
-def get_db():
-    from app import db
-    return db
 
-class FileManagement(get_db().Model):
-    id = get_db().Column(get_db().Integer, primary_key=True)
-    name = get_db().Column(get_db().String(255), nullable=False)
-    filename = get_db().Column(get_db().String(255), nullable=False, unique=True)
-    filepath = get_db().Column(get_db().String(255), nullable=False)
-    file_type = get_db().Column(get_db().String(255), nullable=False) # cls, detect
-    description = get_db().Column(get_db().Text, nullable=True)
-    created_at = get_db().Column(get_db().DateTime, server_default=get_db().func.now())
-    updated_at = get_db().Column(get_db().DateTime, server_default=get_db().func.now(), server_onupdate=get_db().func.now())
+class FileManagement(db.Model):
+    __tablename__ = 'file_management'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255), nullable=False)
+    filename = db.Column(db.String(255), nullable=False, unique=True)
+    filepath = db.Column(db.Text, nullable=False)
+    file_type = db.Column(db.String(255), nullable=False) # cls, detect
+    image_path = db.Column(db.Text, nullable=True)
+    model_name = db.Column(db.String(255), nullable=True)
+    description = db.Column(db.Text, nullable=True)
+
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+    updated_at = db.Column(db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())
 
 
     def __repr__(self):
@@ -26,6 +27,8 @@ class FileManagement(get_db().Model):
             'filename': self.filename,
             'filepath': self.filepath,
             'file_type': self.file_type,
+            'image_path': self.image_path,
+            'model_name': self.model_name,
             'description': self.description,
             'created_at': self.created_at,
             'updated_at': self.updated_at
