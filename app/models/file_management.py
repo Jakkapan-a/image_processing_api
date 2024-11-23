@@ -9,7 +9,7 @@ class FileManagement(db.Model):
     filename = db.Column(db.String(255), nullable=False, unique=True)
     filepath = db.Column(db.Text, nullable=False)
     file_type = db.Column(db.String(255), nullable=False) # cls, detect
-    image_path = db.Column(db.Text, nullable=True)
+    image_name = db.Column(db.Text, nullable=True)
     model_name = db.Column(db.String(255), nullable=True)
     description = db.Column(db.Text, nullable=True)
 
@@ -27,7 +27,7 @@ class FileManagement(db.Model):
             'filename': self.filename,
             'filepath': self.filepath,
             'file_type': self.file_type,
-            'image_path': self.image_path,
+            'image_name': self.image_name,
             'model_name': self.model_name,
             'description': self.description,
             'created_at': self.created_at,

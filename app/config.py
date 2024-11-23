@@ -6,6 +6,7 @@ class Config:
     UPLOAD_FOLDER = 'public/uploads'
     MODEL_FOLDER = 'models'
     DETECT_FOLDER = 'public/detect'
+    IMAGE_FOLDER = 'public/images'
     ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024 # 16MB
     DEBUG = os.getenv("DEBUG", "true").lower() == "true"
