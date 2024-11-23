@@ -3,6 +3,7 @@ import uuid
 from tkinter import image_names
 
 from flask import Blueprint, jsonify, request
+from sqlalchemy import or_
 
 from app.routes.upload import merge_chunks
 
@@ -21,8 +22,17 @@ def list_files():
         # http://domain.com/api/filemanager/list?page=1&per_page=20&search_name=filename
         current_page = request.args.get('page', 1, type=int)
         per_page = request.args.get('per_page', 20, type=int)
-        search_name = request.args.get('search_name', "")
-        _files = FileManagement.query.filter(FileManagement.name.ilike(f"%{search_name}%")).order_by(FileManagement.updated_at.desc()).paginate(page=current_page, per_page=per_page)
+        search_name = request.args.get('search', "")
+
+        _files = FileManagement.query.filter(
+            or_(
+
+                FileManagement.name.ilike(f"%{search_name}%"),
+                FileManagement.model_name.ilike(f"%{search_name}%"),
+                FileManagement.description.ilike(f"%{search_name}%"),
+                FileManagement.file_type.ilike(f"%{search_name}%")
+            )
+        ).order_by(FileManagement.updated_at.desc()).paginate(page=current_page, per_page=per_page)
 
         return jsonify({
             "files": [file.to_dict() for file in _files.items],

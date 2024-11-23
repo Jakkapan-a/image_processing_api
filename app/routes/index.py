@@ -14,14 +14,6 @@ def api():
 
 @index_app.route('/images/<filename>', methods=['GET'])
 def images(filename):
-    print("filename", filename)
-    # path = os.path.join('public/uploads', filename)
-    # if not os.path.exists(path):
-    #     print("File not found")
-    #     return jsonify({"error": "File not found"}), 404
-    # else:
-    #     print("File found")
-
     return send_from_directory('../public/images', filename)
 
 @index_app.route('/clean', methods=['GET'])
