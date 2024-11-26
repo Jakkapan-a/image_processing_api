@@ -1,5 +1,7 @@
 import os
 from datetime import datetime, timedelta
+
+from PIL import Image
 from flask import current_app
 
 def clean_up_folder(folder, max_age_days=15):
@@ -39,4 +41,3 @@ def clean_up_width_db(folder):
                     print(f"Removed file: {file_path}")
     except Exception as e:
         print(f"Error cleaning up folder {folder}: {e}")
-

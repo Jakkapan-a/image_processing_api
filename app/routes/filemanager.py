@@ -1,7 +1,7 @@
 import os
 import uuid
 from tkinter import image_names
-
+from PIL import Image
 from flask import Blueprint, jsonify, request
 from sqlalchemy import or_
 
@@ -12,7 +12,6 @@ filemanager_bp = Blueprint('filemanager', __name__, url_prefix='/filemanager')
 @filemanager_bp.route('/')
 def filemanager():
     return jsonify({"message": "File Manager route"})
-
 
 # noinspection DuplicatedCode
 @filemanager_bp.route('/list')
@@ -98,14 +97,12 @@ def upload_chunk_model():
             new_filename_image = ""
             if image:
                 extension_image = os.path.splitext(image.filename)[1]
-                filename_image = filename.split('.')[0]
+                filename_image = image.filename.split('.')[0]
                 new_filename_image = f"{filename_image}_{uuid.uuid4()}{extension_image}"
                 if not os.path.exists(os.path.join('public', 'images')):
                     os.makedirs(os.path.join('public', 'images'))
                 image.save(os.path.join('public', 'images', new_filename_image))
-
-
-
+                # create_resized_image('public/images', new_filename_image, (200, 200), 'thumbnail')
 
             # Save file record to database
             from app import db
@@ -127,3 +124,21 @@ def upload_chunk_model():
         print('error upload_chunk_model', e)
         return jsonify({"error": str(e)}), 500
 
+
+@filemanager_bp.route('/delete/<int:id>', methods=['DELETE'])
+def delete_file(id):
+    try:
+        from app import db
+        from app.models.file_management import FileManagement
+
+        file = FileManagement.query.get(id)
+        if file is None:
+            return jsonify({"message": "File not found"}), 404
+        db.session.delete(file)
+        db.session.commit()
+
+        return jsonify({"message": "File deleted successfully"}), 200
+    except Exception as e:
+        print("Error deleting file", e)
+
+    return jsonify({"message": "Delete file route"}), 400
